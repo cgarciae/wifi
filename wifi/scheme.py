@@ -130,7 +130,8 @@ class Scheme(object):
         """
         Writes the configuration to the :attr:`interfaces` file.
         """
-        assert not self.find(self.interface, self.name), "This scheme already exists"
+        if self.find(self.interface, self.name):
+            return
 
         with open(self.interfaces, 'a') as f:
             f.write('\n')
@@ -162,7 +163,7 @@ class Scheme(object):
         args = list(itertools.chain.from_iterable(
             ('-o', '{k}={v}'.format(k=k, v=v)) for k, v in self.options.items()))
 
-        return [self.interface + '=' + self.iface] + args
+        return [self.interface, "-o", "name={name}".format(name=self.name)]  + args
 
     def activate(self):
         """
