@@ -94,6 +94,15 @@ class Scheme(object):
         options = ''.join("\n    {k} {v}".format(k=k, v=v) for k, v in self.options.items())
         return iface + options + '\n'
 
+    def supplicant_str(self):
+        """
+        Returns the representation of a scheme that you would need
+        in the /etc/network/interfaces file.
+        """
+        iface = "network={ "
+        options = "\n    ssid={} \n psk={}".format(self.options['wpa-ssid'],self.options['wpa-psk'])
+        return iface + options + '\n } \n'
+
     def __repr__(self):
         return 'Scheme(interface={interface!r}, name={name!r}, options={options!r}'.format(**vars(self))
 
@@ -138,7 +147,7 @@ class Scheme(object):
 
         with open(self.interfaces, 'a') as f:
             f.write('\n')
-            f.write(str(self))
+            f.write(supplicant_str(self))
 
     def delete(self):
         """
@@ -240,4 +249,3 @@ def extract_schemes(interfaces, scheme_class=Scheme):
             scheme = scheme_class(interface, scheme, options)
 
             yield scheme
-
