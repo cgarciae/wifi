@@ -138,6 +138,7 @@ class Scheme(object):
         """
         return cls(interface, name, configuration(cell, passkey))
 
+
     def save(self):
         """
         Writes the configuration to the :attr:`interfaces` file.
