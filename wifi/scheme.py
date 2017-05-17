@@ -5,6 +5,9 @@ import wifi.subprocess_compat as subprocess
 from pbkdf2 import PBKDF2
 from wifi.utils import ensure_file_exists
 from wifi.exceptions import ConnectionError
+import commands, sys
+from time import sleep
+
 
 
 def configuration(cell, passkey=None):
@@ -165,6 +168,24 @@ class Scheme(object):
 
         return [self.interface, "-o", "name={name}".format(name=self.name)]  + args
 
+    def wait4ip(self):
+        ip = ""
+        i = 0
+        time2wait = 20*2 #20 seconds
+        print("Getting IP ."),
+        sys.stdout.flush()
+        while (i < time2wait and ip == ""):
+            ip = commands.getoutput('''ifconfig wlan0 | grep "inet " | awk -F'[: ]+' '{ print $4 }' ''')
+            print("."),
+            sys.stdout.flush()
+            sleep(0.5)
+            i+=1
+        if i == time2wait:
+            print("Not connected")
+        else:
+            print(ip)
+        return ip
+
     def activate(self):
         """
         Connects to the network as configured in this scheme.
@@ -173,8 +194,8 @@ class Scheme(object):
         subprocess.check_output(['/sbin/ifdown', self.interface], stderr=subprocess.STDOUT)
         ifup_output = subprocess.check_output(['/sbin/ifup'] + self.as_args(), stderr=subprocess.STDOUT)
         ifup_output = ifup_output.decode('utf-8')
-
-        return self.parse_ifup_output(ifup_output)
+        ip = self.wait4ip()
+        #return self.parse_ifup_output(ifup_output)
 
     def parse_ifup_output(self, output):
         matches = bound_ip_re.search(output)
@@ -219,3 +240,4 @@ def extract_schemes(interfaces, scheme_class=Scheme):
             scheme = scheme_class(interface, scheme, options)
 
             yield scheme
+
