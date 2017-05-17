@@ -145,8 +145,8 @@ class Scheme(object):
         """
         if self.find(self.interface, self.name):
             return
-
-        with open(self.interfaces, 'a') as f:
+        file_supplicant = "/etc/wpa_supplicant/wpa_supplicant.conf"
+        with open(file_supplicant, 'a') as f:
             f.write('\n')
             f.write(self.supplicant_str())
 
