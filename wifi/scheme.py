@@ -148,7 +148,7 @@ class Scheme(object):
 
         with open(self.interfaces, 'a') as f:
             f.write('\n')
-            f.write(self.supplicant_str(self))
+            f.write(self.supplicant_str())
 
     def delete(self):
         """
