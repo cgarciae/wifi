@@ -170,7 +170,6 @@ class Scheme(object):
                 if "network={" in lines[i]:
                     network = lines[i+1].split("=")[-1] #it is in the format string but with "" -> "mynetwork"
                     network = network[1:-2] #removes the ""
-                    print network
                     if ssid==network:
                         return True
         return False
