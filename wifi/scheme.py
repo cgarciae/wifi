@@ -223,12 +223,17 @@ class Scheme(object):
     def activate(self):
         """
         Connects to the network as configured in this scheme.
+        Returns True if can connect, otherwise returns False
         """
 
         subprocess.check_output(['/sbin/ifdown', self.interface], stderr=subprocess.STDOUT)
         ifup_output = subprocess.check_output(['/sbin/ifup'] + self.as_args(), stderr=subprocess.STDOUT)
         ifup_output = ifup_output.decode('utf-8')
         ip = self.wait4ip()
+        if ip == "":
+            return False
+        else:
+            return True
         #return self.parse_ifup_output(ifup_output)
 
     def parse_ifup_output(self, output):
