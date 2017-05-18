@@ -145,6 +145,16 @@ class Scheme(object):
         """
         if self.find(self.interface, self.name):
             return
+        with open(self.interfaces, 'a') as f:
+            f.write('\n')
+            f.write(str(self))
+
+    def save_supplicant(self):
+        """
+        Writes the configuration to the :attr:`interfaces` file.
+        """
+        if self.find(self.interface, self.name):
+            return
         file_supplicant = "/etc/wpa_supplicant/wpa_supplicant.conf"
         with open(file_supplicant, 'a') as f:
             f.write('\n')
