@@ -100,7 +100,7 @@ class Scheme(object):
         in the /etc/network/interfaces file.
         """
         iface = "network={ "
-        options = "\n    ssid={} \n psk={}".format(self.options['wpa-ssid'],self.options['wpa-psk'])
+        options = '\n    ssid="{}" \n psk={}'.format(self.options['wpa-ssid'],self.options['wpa-psk'])
         return iface + options + '\n } \n'
 
     def __repr__(self):
