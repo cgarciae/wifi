@@ -103,7 +103,7 @@ class Scheme(object):
         """
         iface = "network={ "
         options = '\n    ssid="{}"\n    psk={}'.format(self.options['wpa-ssid'],self.options['wpa-psk'])
-        return iface + options + '\n        } \n'
+        return iface + options + '\n} \n'
 
     def __repr__(self):
         return 'Scheme(interface={interface!r}, name={name!r}, options={options!r}'.format(**vars(self))
@@ -170,6 +170,7 @@ class Scheme(object):
                 if "network={" in lines[i]:
                     network = lines[i+1].split("=")[-1] #it is in the format string but with "" -> "mynetwork"
                     network = network[1:-2] #removes the ""
+                    print network
                     if ssid==network:
                         return True
         return False
