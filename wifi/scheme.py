@@ -98,10 +98,12 @@ class Scheme(object):
         """
         Returns the representation of a scheme that you would need
         in the /etc/network/interfaces file.
+
+******************   FALTA AGREGAR QUE PASA CUANDO ES OTRO TIPO DISTINTO A WPA **********************
         """
         iface = "network={ "
-        options = '\n    ssid="{}" \n psk={}'.format(self.options['wpa-ssid'],self.options['wpa-psk'])
-        return iface + options + '\n } \n'
+        options = '\n    ssid="{}"\n    psk={}'.format(self.options['wpa-ssid'],self.options['wpa-psk'])
+        return iface + options + '\n        } \n'
 
     def __repr__(self):
         return 'Scheme(interface={interface!r}, name={name!r}, options={options!r}'.format(**vars(self))
@@ -153,12 +155,24 @@ class Scheme(object):
         """
         Writes the configuration to the :attr:`interfaces` file.
         """
-        if self.find(self.interface, self.name):
+        if self.find_supplicant(self.name):
             return
         file_supplicant = "/etc/wpa_supplicant/wpa_supplicant.conf"
         with open(file_supplicant, 'a') as f:
             f.write('\n')
             f.write(self.supplicant_str())
+
+    def find_supplicant(self, ssid):
+        file_supplicant = "/etc/wpa_supplicant/wpa_supplicant.conf"
+        with open(file_supplicant) as f:
+            lines = f.readlines()
+            for i in range(len(lines)):
+                if "network={" in lines[i]:
+                    network = lines[i+1].split("=")[-1] #it is in the format string but with "" -> "mynetwork"
+                    network = network[1:-2] #removes the ""
+                    if ssid==network:
+                        return True
+        return False
 
     def delete(self):
         """
