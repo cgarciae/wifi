@@ -103,7 +103,7 @@ class Scheme(object):
 ******************   FALTA AGREGAR QUE PASA CUANDO ES OTRO TIPO DISTINTO A WPA **********************
         """
         iface = "network={ "
-        options = '\n    ssid="{}"\n    psk={}'.format(self.options['wpa-ssid'],self.pass_)
+        options = '\n    ssid="{}"\n    psk="{}""'.format(self.options['wpa-ssid'],self.pass_)
         return iface + options + '\n} \n'
 
     def __repr__(self):
