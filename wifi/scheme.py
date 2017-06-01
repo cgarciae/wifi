@@ -80,10 +80,11 @@ class Scheme(object):
             'interfaces': interfaces,
         })
 
-    def __init__(self, interface, name, options=None):
+    def __init__(self, interface, name, passkey = None, options=None):
         self.interface = interface
         self.name = name
         self.options = options or {}
+        self.pass_ = passkey #password without encryption in case of wpa
 
     def __str__(self):
         """
@@ -97,12 +98,12 @@ class Scheme(object):
     def supplicant_str(self):
         """
         Returns the representation of a scheme that you would need
-        in the /etc/network/interfaces file.
+        in the /etc/wpa_supplicant/wpa_supplicant.conf file.
 
 ******************   FALTA AGREGAR QUE PASA CUANDO ES OTRO TIPO DISTINTO A WPA **********************
         """
         iface = "network={ "
-        options = '\n    ssid="{}"\n    psk={}'.format(self.options['wpa-ssid'],self.options['wpa-psk'])
+        options = '\n    ssid="{}"\n    psk={}'.format(self.options['wpa-ssid'],self.pass_)
         return iface + options + '\n} \n'
 
     def __repr__(self):
@@ -138,7 +139,7 @@ class Scheme(object):
         Intuits the configuration needed for a specific
         :class:`Cell` and creates a :class:`Scheme` for it.
         """
-        return cls(interface, name, configuration(cell, passkey))
+        return cls(interface, name, passkey, configuration(cell, passkey))
 
 
     def save(self):
